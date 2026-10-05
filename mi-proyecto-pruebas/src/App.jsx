@@ -1,122 +1,99 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import MiComponente from './components/MiComponente';
+import Contador from './components/Contador';
+import Formulario from './components/Formulario';
+import ComponentePesado from './components/ComponentePesado';
+import Login from './components/Login';
+import Input from './components/Input';
+import OptimizedApp from './components/OptimizedApp';
+import ServicioAPI from './services/ServicioAPI';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [enviado, setEnviado] = useState(null);
+  const [usuario, setUsuario] = useState(null);
+  const [error, setError] = useState('');
+
+  const cargarDatos = async () => {
+    try {
+      setError('');
+      setUsuario(await ServicioAPI.getData());
+    } catch {
+      setError('No fue posible obtener los datos');
+    }
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Navbar bg="dark" variant="dark" className="mb-4">
+        <Container>
+          <Navbar.Brand>Pruebas unitarias con Vitest</Navbar.Brand>
+        </Container>
+      </Navbar>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <Container>
+        <h1 className="h3 mb-4">Componentes del proyecto</h1>
+        <Row className="g-4">
+          <Col md={6}><MiComponente /></Col>
+          <Col md={6}><Contador /></Col>
+          <Col md={6}>
+            <Card className="shadow-sm">
+              <Card.Body>
+                <h2 className="h5">Formulario</h2>
+                <Formulario onSubmit={setEnviado} />
+                {enviado && (
+                  <Alert variant="success" className="mt-3">
+                    Enviado: {enviado.nombre} ({enviado.email})
+                  </Alert>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="shadow-sm">
+              <Card.Body>
+                <h2 className="h5">ServicioAPI</h2>
+                <Button onClick={cargarDatos}>Cargar datos</Button>
+                {usuario && <p className="mt-3 mb-0">Usuario: {usuario.name}</p>}
+                {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="shadow-sm">
+              <Card.Body>
+                <h2 className="h5">Inicio de sesión</h2>
+                <Login />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="shadow-sm">
+              <Card.Body>
+                <h2 className="h5">Input seguro</h2>
+                <Input />
+                <div className="mt-3"><OptimizedApp /></div>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={12}>
+            <Card className="shadow-sm mb-4">
+              <Card.Body>
+                <h2 className="h5">Componente pesado</h2>
+                <ComponentePesado />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
